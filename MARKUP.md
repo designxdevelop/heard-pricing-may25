@@ -42,6 +42,8 @@ Hidden elements get `data-entity-hidden`, plus an injected `display:none !import
 
 ## 4. Cards (keep all in `.pricing-cards-wrap-may-2025`)
 
+Prices are plain text in Webflow. Nothing swaps them anymore, so the old `price-per-*`, `*-details`, `ppm-*`, `m-value`/`a-value` attributes and the `.pricing-chart_toggle-container` monthly/annual toggle can be removed.
+
 Reuse the three existing `.pricing-card-may25` cards (Lite, Essential, Premium). The Premium card becomes Essential (for S Corps or Groups).
 
 | | Lite | Essential (for Sole Props) | Essential (for S Corps or Groups) |
@@ -58,16 +60,6 @@ Reuse the three existing `.pricing-card-may25` cards (Lite, Essential, Premium).
 - `data-featured` makes the mobile slider open on that card. Without it, the slider opens on the first card.
 - `data-slider-label` sets the text of the mobile plan switch. Without it, the switch uses the card's `h3`.
 - The real annual discounts are 12.6%, 13.7%, and 14.3%. Don't write "save 15%".
-
-### Only if you keep the monthly/annual toggle
-
-The existing attributes still work. The `.pricing-chart_toggle-container` element is now optional. When it is present, it gets `aria-pressed` (true means monthly) and keyboard support.
-
-| Element | Lite | Essential (Sole Props) | Essential (S Corps/Groups) |
-|---|---|---|---|
-| price number: `price-per-month` / `price-per-annual` | `159` / `139` | `219` / `189` | `349` / `299` |
-| detail line: `monthly-details` / `annual-details` | `Billed monthly • Cancel anytime` / `$1,668 billed annually · save $240 a year` | … / `$2,268 billed annually · save $360 a year` | … / `$3,588 billed annually · save $600 a year` |
-| `.price-month`: `ppm-monthly` / `ppm-annually` | `/mo` / `/mo` | same | same |
 
 ## 5. Add-ons
 
