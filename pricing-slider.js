@@ -13,7 +13,9 @@ document.addEventListener("DOMContentLoaded", function () {
   let switchOptions = [];
 
   function getPricingCardSlides() {
-    return Array.from(pricingCardsWrap.children).filter((child) => child.matches(".pricing-card-may25") || child.querySelector(".pricing-card-may25"));
+    return Array.from(pricingCardsWrap.children).filter(
+      (child) => !child.hasAttribute("data-entity-hidden") && (child.matches(".pricing-card-may25") || child.querySelector(".pricing-card-may25"))
+    );
   }
 
   function createControls() {
@@ -32,14 +34,13 @@ document.addEventListener("DOMContentLoaded", function () {
     controlsWrapper.style.background = "#fff";
     controlsWrapper.style.boxShadow = "0 1px 5px rgba(0, 0, 0, 0.14)";
 
-    const fallbackLabels = cards.length === 3 ? ["Lite", "Essential", "Premium"] : [];
-
     switchOptions = cards.map((card, index) => {
+      const label = card.querySelector("[data-slider-label]")?.getAttribute("data-slider-label") || card.getAttribute("data-slider-label");
       const headingText = card.querySelector("h3")?.textContent?.trim();
       const option = document.createElement("button");
       option.type = "button";
       option.className = "pricing-slider-option";
-      option.textContent = fallbackLabels[index] || headingText || `Plan ${index + 1}`;
+      option.textContent = label || headingText || `Plan ${index + 1}`;
       option.setAttribute("role", "tab");
       option.style.flex = "1 1 0";
       option.style.minWidth = "0";
@@ -87,14 +88,17 @@ document.addEventListener("DOMContentLoaded", function () {
     pricingCardsWrap.style.scrollSnapType = "x mandatory"; // This might be less relevant if not truly scrolling
     pricingCardsWrap.style.webkitOverflowScrolling = "touch";
 
+    // Open on the featured card (e.g. Essential) if one is marked, else the first.
+    const featuredIndex = cards.findIndex((card) => card.matches("[data-featured]") || card.querySelector("[data-featured]"));
+    currentCardIndex = Math.max(featuredIndex, 0);
+
     cards.forEach((card, index) => {
       card.style.minWidth = "100%";
       card.style.scrollSnapAlign = "start"; // This might be less relevant
-      card.style.display = index === 0 ? "flex" : "none"; // Active card is flex, others none
+      card.style.display = index === currentCardIndex ? "flex" : "none"; // Active card is flex, others none
     });
 
     isSliderActive = true;
-    currentCardIndex = 0;
     createControls(); // Create segmented plan switch
     updateCardVisibility(); // Initial visibility and control state update
   }
@@ -194,4 +198,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Listen for window resize events
   window.addEventListener("resize", checkBreakpoint);
+
+  // Customer-type toggle changed the visible card set: rebuild for the new count.
+  document.addEventListener("heard:entity", () => {
+    destroySlider();
+    checkBreakpoint();
+  });
 });

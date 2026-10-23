@@ -17,6 +17,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   };
   function updateView() {
+    if (toggleButton)
+      toggleButton.setAttribute("aria-pressed", currentView === "monthly" ? "true" : "false");
     if (currentView === "annual") {
       setTextFromAttr(getPriceElements(), "price-per-annual");
       setTextFromAttr(getDetailElements(), "annual-details");
@@ -38,15 +40,78 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
   if (toggleButton) {
+    if (toggleButton.tagName !== "BUTTON") {
+      toggleButton.setAttribute("role", "button");
+      if (!toggleButton.hasAttribute("tabindex"))
+        toggleButton.setAttribute("tabindex", "0");
+      toggleButton.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          toggleButton.click();
+        }
+      });
+    }
+    if (!toggleButton.hasAttribute("aria-label"))
+      toggleButton.setAttribute("aria-label", "Show monthly pricing");
     toggleButton.addEventListener("click", () => {
       currentView = currentView === "annual" ? "monthly" : "annual";
       updateView();
     });
-  } else {
-    console.error('Pricing toggle button with class "pricing-chart_toggle-container" not found.');
   }
   updateView();
   window.addEventListener("load", updateView);
+});
+
+// pricing-entity.js
+document.addEventListener("DOMContentLoaded", () => {
+  const ENTITIES = ["solo", "scorp"];
+  const DEFAULT_ENTITY = "solo";
+  const buttons = document.querySelectorAll("[data-entity]");
+  if (!buttons.length)
+    return;
+  const style = document.createElement("style");
+  style.textContent = "[data-entity-hidden]{display:none!important}";
+  document.head.appendChild(style);
+  document.querySelectorAll("[data-entity-toggle]").forEach((group) => {
+    if (!group.hasAttribute("role"))
+      group.setAttribute("role", "group");
+    if (!group.hasAttribute("aria-label"))
+      group.setAttribute("aria-label", "Practice type");
+  });
+  buttons.forEach((btn) => {
+    if (btn.tagName !== "BUTTON") {
+      btn.setAttribute("role", "button");
+      if (!btn.hasAttribute("tabindex"))
+        btn.setAttribute("tabindex", "0");
+      btn.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          btn.click();
+        }
+      });
+    }
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      setEntity(btn.getAttribute("data-entity"));
+    });
+  });
+  function setEntity(entity) {
+    if (!ENTITIES.includes(entity))
+      entity = DEFAULT_ENTITY;
+    buttons.forEach((btn) => {
+      const isActive = btn.getAttribute("data-entity") === entity;
+      btn.classList.toggle("is-active", isActive);
+      if (btn.closest("[data-entity-toggle]"))
+        btn.setAttribute("aria-pressed", isActive ? "true" : "false");
+    });
+    document.querySelectorAll("[data-entity-toggle]").forEach((group) => group.setAttribute("data-active-entity", entity));
+    document.querySelectorAll("[data-entity-show]").forEach((el) => {
+      el.toggleAttribute("data-entity-hidden", el.getAttribute("data-entity-show") !== entity);
+    });
+    document.dispatchEvent(new CustomEvent("heard:entity", { detail: { entity } }));
+  }
+  const requested = new URLSearchParams(window.location.search).get("entity") || window.location.hash.slice(1);
+  setEntity(requested);
 });
 
 // pricing-slider.js
@@ -63,7 +128,7 @@ document.addEventListener("DOMContentLoaded", function() {
   let cards = [];
   let switchOptions = [];
   function getPricingCardSlides() {
-    return Array.from(pricingCardsWrap.children).filter((child) => child.matches(".pricing-card-may25") || child.querySelector(".pricing-card-may25"));
+    return Array.from(pricingCardsWrap.children).filter((child) => !child.hasAttribute("data-entity-hidden") && (child.matches(".pricing-card-may25") || child.querySelector(".pricing-card-may25")));
   }
   function createControls() {
     const controlsWrapper = document.createElement("div");
@@ -80,13 +145,13 @@ document.addEventListener("DOMContentLoaded", function() {
     controlsWrapper.style.borderRadius = "999px";
     controlsWrapper.style.background = "#fff";
     controlsWrapper.style.boxShadow = "0 1px 5px rgba(0, 0, 0, 0.14)";
-    const fallbackLabels = cards.length === 3 ? ["Lite", "Essential", "Premium"] : [];
     switchOptions = cards.map((card, index) => {
+      const label = card.querySelector("[data-slider-label]")?.getAttribute("data-slider-label") || card.getAttribute("data-slider-label");
       const headingText = card.querySelector("h3")?.textContent?.trim();
       const option = document.createElement("button");
       option.type = "button";
       option.className = "pricing-slider-option";
-      option.textContent = fallbackLabels[index] || headingText || `Plan ${index + 1}`;
+      option.textContent = label || headingText || `Plan ${index + 1}`;
       option.setAttribute("role", "tab");
       option.style.flex = "1 1 0";
       option.style.minWidth = "0";
@@ -129,13 +194,14 @@ document.addEventListener("DOMContentLoaded", function() {
     pricingCardsWrap.style.display = "block";
     pricingCardsWrap.style.scrollSnapType = "x mandatory";
     pricingCardsWrap.style.webkitOverflowScrolling = "touch";
+    const featuredIndex = cards.findIndex((card) => card.matches("[data-featured]") || card.querySelector("[data-featured]"));
+    currentCardIndex = Math.max(featuredIndex, 0);
     cards.forEach((card, index) => {
       card.style.minWidth = "100%";
       card.style.scrollSnapAlign = "start";
-      card.style.display = index === 0 ? "flex" : "none";
+      card.style.display = index === currentCardIndex ? "flex" : "none";
     });
     isSliderActive = true;
-    currentCardIndex = 0;
     createControls();
     updateCardVisibility();
   }
@@ -212,4 +278,8 @@ document.addEventListener("DOMContentLoaded", function() {
   }
   checkBreakpoint();
   window.addEventListener("resize", checkBreakpoint);
+  document.addEventListener("heard:entity", () => {
+    destroySlider();
+    checkBreakpoint();
+  });
 });

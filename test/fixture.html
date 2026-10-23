@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pricing fixture (2027 phase 1)</title>
+<!-- Local fixture mirroring the Webflow markup in MARKUP.md. Serve the repo root and open /test/fixture.html -->
+<style>
+  * { box-sizing: border-box; } /* Webflow default */
+  body { font-family: system-ui, sans-serif; margin: 0; padding: 16px; background: #fcf8f2; }
+  .entity-toggle { display: inline-grid; grid-template-columns: 1fr 1fr; background: #fae3c3; border-radius: 50px; padding: 4px; }
+  .entity-toggle button { border: 0; background: none; padding: 12px 16px; border-radius: 50px; font: inherit; cursor: pointer; }
+  .entity-toggle button.is-active { background: #fff; }
+  .pkg-banner { padding: 12px; background: #eff8f4; margin: 16px 0; }
+  .pricing-chart_toggle-container { display: inline-block; padding: 8px 12px; border: 1px solid #226752; border-radius: 50px; cursor: pointer; }
+  /* Webflow sets display on the class, which is what defeats a plain [hidden] attribute */
+  .pricing-cards-wrap-may-2025 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-top: 16px; }
+  .pricing-card-may25 { display: flex; flex-direction: column; background: #fff; border-radius: 16px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,.2); }
+  .mm { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-top: 24px; background: #fae3c3; padding: 16px; border-radius: 16px; }
+  .mm-col { display: flex; flex-direction: column; background: #fff; padding: 16px; border-radius: 12px; }
+</style>
+</head>
+<body>
+  <div class="entity-toggle" data-entity-toggle>
+    <button type="button" data-entity="solo">Solo sole prop</button>
+    <button type="button" data-entity="scorp">S corp or group</button>
+  </div>
+
+  <div class="pkg-banner" data-entity-show="solo">Up to $2,626 in value when you join by December 31</div>
+  <div class="pkg-banner" data-entity-show="scorp">Up to $3,376 in value when you join by December 31</div>
+
+  <!-- Optional legacy billing toggle (not in the 2027 design) -->
+  <div class="pricing-chart_toggle-container">Annual / Monthly</div>
+
+  <div class="pricing-cards-wrap-may-2025">
+    <div class="pricing-card-may25" data-entity-show="solo" data-slider-label="Lite">
+      <h3>Lite</h3>
+      <p><span price-per-month="159" price-per-annual="139">139</span><span class="price-month" ppm-monthly="/mo" ppm-annually="/mo">/mo</span></p>
+      <p monthly-details="Billed monthly • Cancel anytime" annual-details="$1,668 billed annually · save $240 a year">$1,668 billed annually · save $240 a year</p>
+    </div>
+    <div class="pricing-card-may25" data-entity-show="solo" data-featured data-slider-label="Essential">
+      <h3>Essential (for Sole Props)</h3>
+      <p><span price-per-month="219" price-per-annual="189">189</span><span class="price-month" ppm-monthly="/mo" ppm-annually="/mo">/mo</span></p>
+      <p monthly-details="Billed monthly • Cancel anytime" annual-details="$2,268 billed annually · save $360 a year">$2,268 billed annually · save $360 a year</p>
+    </div>
+    <div class="pricing-card-may25" data-entity-show="scorp" data-featured data-slider-label="Essential">
+      <h3>Essential (for S Corps or Groups)</h3>
+      <p><span price-per-month="349" price-per-annual="299">299</span><span class="price-month" ppm-monthly="/mo" ppm-annually="/mo">/mo</span></p>
+      <p monthly-details="Billed monthly • Cancel anytime" annual-details="$3,588 billed annually · save $600 a year">$3,588 billed annually · save $600 a year</p>
+    </div>
+  </div>
+
+  <section class="mm" aria-label="Monthly pricing">
+    <div class="mm-col" data-entity-show="solo">Lite · $159/mo · Billed monthly</div>
+    <div class="mm-col" data-entity-show="solo">Essential · $219/mo · Billed monthly</div>
+    <div class="mm-col" data-entity-show="scorp">Essential · $349/mo · Billed monthly</div>
+  </section>
+
+  <script src="../dist/heard-pricing.js/heard-pricing.js"></script>
+</body>
+</html>
