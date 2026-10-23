@@ -45,6 +45,8 @@ document.addEventListener("DOMContentLoaded", () => {
       if (btn.closest("[data-entity-toggle]")) btn.setAttribute("aria-pressed", isActive ? "true" : "false");
     });
     document.querySelectorAll("[data-entity-toggle]").forEach((group) => group.setAttribute("data-active-entity", entity));
+    // Keeps the pre-paint CSS in the Webflow embed (see MARKUP.md) in sync with the toggle.
+    document.documentElement.setAttribute("data-pricing-entity", entity);
     document.querySelectorAll("[data-entity-show]").forEach((el) => {
       el.toggleAttribute("data-entity-hidden", el.getAttribute("data-entity-show") !== entity);
     });

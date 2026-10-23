@@ -26,6 +26,13 @@
 </head>
 <body>
 <section class="pr27-section">
+  <!-- Mirrors the Webflow "Pricing 2027 pre-paint" embed: hides the other customer type before the script loads -->
+  <style>
+    html[data-pricing-entity="solo"] [data-entity-show="scorp"],
+    html[data-pricing-entity="scorp"] [data-entity-show="solo"] { display: none !important; }
+    @media (max-width: 767px) { html[data-pricing-entity] .pr27-card:not([data-featured]) { display: none; } }
+  </style>
+  <script>(function(){var e=new URLSearchParams(location.search).get("entity")||location.hash.slice(1);document.documentElement.setAttribute("data-pricing-entity",e==="scorp"?"scorp":"solo")})();</script>
   <div class="pr27-container">
     <div class="pr27-pkg" data-entity-show="solo">Up to $2,626 in value when you join by December 31</div>
     <div class="pr27-pkg" data-entity-show="scorp">Up to $3,376 in value when you join by December 31</div>

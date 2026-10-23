@@ -41,6 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
         btn.setAttribute("aria-pressed", isActive ? "true" : "false");
     });
     document.querySelectorAll("[data-entity-toggle]").forEach((group) => group.setAttribute("data-active-entity", entity));
+    document.documentElement.setAttribute("data-pricing-entity", entity);
     document.querySelectorAll("[data-entity-show]").forEach((el) => {
       el.toggleAttribute("data-entity-hidden", el.getAttribute("data-entity-show") !== entity);
     });
