@@ -6,13 +6,13 @@ The new module is already built in Webflow on the Pricing page. In the Navigator
 
 ## 1. Script
 
-The script loads from a hidden embed in the page body:
+The new module loads its own copy of the script from an embed at the end of the section, named **"Pricing 2027 script (jsDelivr @0114de3)"** in the Navigator. It's built from the `pricing-2027-phase1` branch:
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/designxdevelop/heard-pricing-may25@7245820/dist/heard-pricing.js/heard-pricing.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/designxdevelop/heard-pricing-may25@0114de3/dist/heard-pricing.js/heard-pricing.js"></script>
 ```
 
-After pushing, change `@7245820` to the new commit SHA, at the same time as removing the old pricing component. The URL is pinned to a commit, so pushing to `main` doesn't change the live site. Until the SHA changes, the toggle does nothing and both customer types show at once.
+The old section still loads `@7245820` through the shared "Pricing Logic (JS)" component, which has 3 instances. Leave that component alone. Both scripts can run on the same page: each slider only manages its own controls. Deleting the old section at launch also removes the old script. To ship a new build, change the SHA in the new embed. Custom code only runs on a published site, so the toggle can't be tested in the Designer.
 
 ## 2. Attributes the script reads
 
