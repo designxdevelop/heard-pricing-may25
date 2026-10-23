@@ -6,10 +6,13 @@ The new module is already built in Webflow on the Pricing page. In the Navigator
 
 ## 1. Script
 
-The new module loads its own copy of the script from an embed at the end of the section, named **"Pricing 2027 script (jsDelivr @0114de3)"** in the Navigator. It's built from the `pricing-2027-phase1` branch:
+The new section has two embeds of its own:
+
+- **"Pricing 2027 pre-paint (no-flash CSS)"** is the first child of the section. Its small inline script sets `html[data-pricing-entity]` from `?entity=` or `#scorp` (default `solo`), and its CSS hides the other customer type before first paint. On mobile the CSS also shows only the `data-featured` card until the slider starts. The rules only apply after that inline script runs, and Webflow doesn't run scripts in the Designer, so the Designer still shows everything.
+- **"Pricing 2027 script (jsDelivr @e8d28c0)"** is the last child of the section. It loads the full script, which keeps `data-pricing-entity` in sync when someone switches types. It's built from the `pricing-2027-phase1` branch:
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/designxdevelop/heard-pricing-may25@0114de3/dist/heard-pricing.js/heard-pricing.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/designxdevelop/heard-pricing-may25@e8d28c0/dist/heard-pricing.js/heard-pricing.js"></script>
 ```
 
 The old section still loads `@7245820` through the shared "Pricing Logic (JS)" component, which has 3 instances. Leave that component alone. Both scripts can run on the same page: each slider only manages its own controls. Deleting the old section at launch also removes the old script. To ship a new build, change the SHA in the new embed. Custom code only runs on a published site, so the toggle can't be tested in the Designer.
