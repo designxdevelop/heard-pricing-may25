@@ -117,9 +117,9 @@ document.addEventListener("DOMContentLoaded", function () {
       card.style.display = ""; // Reset to original (or CSS defined)
     });
 
-    // Remove controls
-    const controlsWrapper = document.querySelector(".pricing-slider-controls");
-    if (controlsWrapper) {
+    // Remove this slider's controls (inserted right before the wrap; another slider may exist on the page)
+    const controlsWrapper = pricingCardsWrap.previousElementSibling;
+    if (controlsWrapper && controlsWrapper.matches(".pricing-slider-controls")) {
       controlsWrapper.remove();
     }
     switchOptions = [];

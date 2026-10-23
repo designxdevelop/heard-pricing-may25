@@ -152,8 +152,8 @@ document.addEventListener("DOMContentLoaded", function() {
       card.style.scrollSnapAlign = "";
       card.style.display = "";
     });
-    const controlsWrapper = document.querySelector(".pricing-slider-controls");
-    if (controlsWrapper) {
+    const controlsWrapper = pricingCardsWrap.previousElementSibling;
+    if (controlsWrapper && controlsWrapper.matches(".pricing-slider-controls")) {
       controlsWrapper.remove();
     }
     switchOptions = [];
