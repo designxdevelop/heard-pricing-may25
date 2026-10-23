@@ -2,6 +2,8 @@
 
 Add these as Webflow **custom attributes** (Element settings → Custom attributes). If an attribute has no value, leave the value field empty.
 
+> The prices and the attribute names here are final. Billing lines, badges, and monthly-row text come from Mel's mockup, which is visual and not copy-final. Treat them as placeholders until the copy is confirmed.
+
 ## 1. Script
 
 The page loads the script from a hidden embed in the page body (not site settings):
