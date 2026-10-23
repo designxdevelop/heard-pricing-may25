@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // pricing-slider.js
 document.addEventListener("DOMContentLoaded", function() {
-  const pricingCardsWrap = document.querySelector(".pricing-cards-wrap-may-2025");
+  const pricingCardsWrap = document.querySelector(".pr27-cards");
   if (!pricingCardsWrap) {
     console.error("Pricing cards wrap element not found.");
     return;
@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", function() {
   let cards = [];
   let switchOptions = [];
   function getPricingCardSlides() {
-    return Array.from(pricingCardsWrap.children).filter((child) => !child.hasAttribute("data-entity-hidden") && (child.matches(".pricing-card-may25") || child.querySelector(".pricing-card-may25")));
+    return Array.from(pricingCardsWrap.children).filter((child) => !child.hasAttribute("data-entity-hidden") && child.matches(".pr27-card"));
   }
   function createControls() {
     const controlsWrapper = document.createElement("div");

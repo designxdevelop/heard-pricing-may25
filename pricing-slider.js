@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const pricingCardsWrap = document.querySelector(".pricing-cards-wrap-may-2025");
+  const pricingCardsWrap = document.querySelector(".pr27-cards");
   if (!pricingCardsWrap) {
     console.error("Pricing cards wrap element not found.");
     return;
@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function getPricingCardSlides() {
     return Array.from(pricingCardsWrap.children).filter(
-      (child) => !child.hasAttribute("data-entity-hidden") && (child.matches(".pricing-card-may25") || child.querySelector(".pricing-card-may25"))
+      (child) => !child.hasAttribute("data-entity-hidden") && child.matches(".pr27-card")
     );
   }
 
