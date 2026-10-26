@@ -8,11 +8,11 @@ The new module is the **"Pricing - 2027"** component (root class `pr27-section`)
 
 The new section has two embeds of its own:
 
-- **"Pricing 2027 pre-paint (no-flash CSS)"** is the first child of the section. Its small inline script sets `html[data-pricing-entity]` from `?entity=` or `#scorp` (default `solo`), and its CSS hides the other customer type before first paint. On mobile the CSS also shows only the `data-featured` card until the slider starts. The rules only apply after that inline script runs, and Webflow doesn't run scripts in the Designer, so the Designer still shows everything.
-- **"Pricing 2027 script (jsDelivr @e8d28c0)"** is the last child of the section. It loads the full script, which keeps `data-pricing-entity` in sync when someone switches types. It's built from the `pricing-2027-phase1` branch:
+- **"Pricing 2027 pre-paint (no-flash CSS)"** is the first child of the section. Its small inline script sets `html[data-pricing-entity]` from `?entity=` or `#scorp` (default `solo`), and its CSS hides the other customer type before first paint. On mobile the CSS also shows only the `data-featured` card until the slider starts, and card accordion panels stay closed until the script runs. The rules only apply after that inline script runs, and Webflow doesn't run scripts in the Designer, so the Designer still shows everything.
+- **"Pricing 2027 script (jsDelivr @fe05db7)"** is the last child of the section. It loads the full script: the toggle (it keeps `data-pricing-entity` in sync), the mobile slider, the card accordions and the plan-help modal. It's built from the `pricing-2027-phase1` branch:
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/designxdevelop/heard-pricing-may25@e8d28c0/dist/heard-pricing.js/heard-pricing.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/designxdevelop/heard-pricing-may25@fe05db7/dist/heard-pricing.js/heard-pricing.js"></script>
 ```
 
 The old section still loads `@7245820` through the shared "Pricing Logic (JS)" component, which has 3 instances. Leave that component alone. Both scripts can run on the same page: each slider only manages its own controls. Deleting the old section at launch also removes the old script. To ship a new build, change the SHA in the new embed. Custom code only runs on a published site, so the toggle can't be tested in the Designer.
@@ -96,9 +96,6 @@ Native Webflow Modals aren't enabled on this site, so the overlay is a plain div
 
 ## 7. Before launch
 
-- **The accordions and the modal need the new script.** Push the branch, then change the script embed's SHA from `@e8d28c0` to the new commit.
-- In the same step, add this rule to the pre-paint embed so accordion panels don't flash open before the script loads. Don't add it before the SHA change, or the panels would stay closed with no way to open them:
-  `html[data-pricing-entity] [data-card-accordion]:not([data-open]) [data-card-accordion-panel] { display: none !important; }`
-
-- Delete the old "Pricing Section (no Lite)" component on this page, which has its own `h1`. Also remove the `is-prelaunch-hidden` class if it's on, and change the embed SHA.
+- To ship a new build: push `pricing-2027-phase1`, then change the SHA in the "Pricing 2027 script" embed.
+- The old "Pricing Section (no Lite)" now sits in a hidden div on this page, and it has its own `h1`. Delete it once the launch is confirmed.
 - FAQ: keep the `.pricing-faq_row`, `.acc-head h3` and `.acc-body` classes, which the FAQ schema script depends on.
