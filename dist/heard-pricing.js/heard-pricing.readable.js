@@ -1,3 +1,18 @@
+// as-button.js
+function asButton(el) {
+  if (el.tagName === "BUTTON")
+    return;
+  el.setAttribute("role", "button");
+  if (!el.hasAttribute("tabindex"))
+    el.setAttribute("tabindex", "0");
+  el.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      el.click();
+    }
+  });
+}
+
 // pricing-entity.js
 document.addEventListener("DOMContentLoaded", () => {
   const ENTITIES = ["solo", "scorp"];
@@ -15,30 +30,23 @@ document.addEventListener("DOMContentLoaded", () => {
       group.setAttribute("aria-label", "Practice type");
   });
   buttons.forEach((btn) => {
-    if (btn.tagName !== "BUTTON") {
-      btn.setAttribute("role", "button");
-      if (!btn.hasAttribute("tabindex"))
-        btn.setAttribute("tabindex", "0");
-      btn.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          btn.click();
-        }
-      });
-    }
+    asButton(btn);
+    const inToggle = !!btn.closest("[data-entity-toggle]");
     btn.addEventListener("click", (e) => {
-      e.preventDefault();
+      if (inToggle)
+        e.preventDefault();
       setEntity(btn.getAttribute("data-entity"));
+      if (!inToggle)
+        document.querySelector("[data-entity-toggle]")?.scrollIntoView({ behavior: "smooth", block: "center" });
     });
   });
   function setEntity(entity) {
     if (!ENTITIES.includes(entity))
       entity = DEFAULT_ENTITY;
-    buttons.forEach((btn) => {
+    document.querySelectorAll("[data-entity-toggle] [data-entity]").forEach((btn) => {
       const isActive = btn.getAttribute("data-entity") === entity;
       btn.classList.toggle("is-active", isActive);
-      if (btn.closest("[data-entity-toggle]"))
-        btn.setAttribute("aria-pressed", isActive ? "true" : "false");
+      btn.setAttribute("aria-pressed", isActive ? "true" : "false");
     });
     document.querySelectorAll("[data-entity-toggle]").forEach((group) => group.setAttribute("data-active-entity", entity));
     document.documentElement.setAttribute("data-pricing-entity", entity);
@@ -218,5 +226,37 @@ document.addEventListener("DOMContentLoaded", function() {
   document.addEventListener("heard:entity", () => {
     destroySlider();
     checkBreakpoint();
+  });
+});
+
+// pricing-accordion.js
+document.addEventListener("DOMContentLoaded", () => {
+  const accordions = document.querySelectorAll("[data-card-accordion]");
+  if (!accordions.length)
+    return;
+  const style = document.createElement("style");
+  style.textContent = "[data-card-accordion]:not([data-open]) [data-card-accordion-panel]{display:none!important}";
+  document.head.appendChild(style);
+  accordions.forEach((accordion, i) => {
+    const trigger = accordion.querySelector("[data-card-accordion-trigger]");
+    const panel = accordion.querySelector("[data-card-accordion-panel]");
+    if (!trigger || !panel)
+      return;
+    if (!panel.id)
+      panel.id = `card-accordion-panel-${i + 1}`;
+    trigger.setAttribute("aria-controls", panel.id);
+    asButton(trigger);
+    const setOpen = (open) => {
+      accordion.toggleAttribute("data-open", open);
+      trigger.setAttribute("aria-expanded", open ? "true" : "false");
+      const icon = trigger.querySelector("[data-card-accordion-icon]");
+      if (icon)
+        icon.textContent = open ? "−" : "+";
+    };
+    setOpen(accordion.hasAttribute("data-open"));
+    trigger.addEventListener("click", (e) => {
+      e.preventDefault();
+      setOpen(!accordion.hasAttribute("data-open"));
+    });
   });
 });

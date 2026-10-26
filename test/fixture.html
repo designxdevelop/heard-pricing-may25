@@ -18,6 +18,7 @@
   .pr27-cards { display: grid; grid-template-columns: minmax(0, 26rem) minmax(0, 26rem); justify-content: center; align-items: start; gap: 2rem; }
   .pr27-card { display: flex; flex-direction: column; padding: 2rem 1.5rem; border-radius: 16px; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,.2); }
   .pr27-panel { display: flex; flex-direction: column; padding: 2rem 1.5rem; border-radius: 16px; background: #eff8f4; }
+  .pr27-acc-panel { display: block; }
   .pr27-mm { max-width: 54rem; margin: 2.5rem auto 0; border-radius: 16px; background: #fae3c3; padding: 1.5rem; }
   .pr27-mm-cols { display: flex; flex-wrap: wrap; gap: 1rem; }
   .pr27-mm-col { display: flex; flex-direction: column; flex: 1 1 14rem; padding: 1.1rem 1.25rem; border-radius: 12px; background: #fff; }
@@ -31,6 +32,7 @@
     html[data-pricing-entity="solo"] [data-entity-show="scorp"],
     html[data-pricing-entity="scorp"] [data-entity-show="solo"] { display: none !important; }
     @media (max-width: 767px) { html[data-pricing-entity] .pr27-card:not([data-featured]) { display: none; } }
+    html[data-pricing-entity] [data-card-accordion]:not([data-open]) [data-card-accordion-panel] { display: none !important; }
   </style>
   <script>(function(){var e=new URLSearchParams(location.search).get("entity")||location.hash.slice(1);document.documentElement.setAttribute("data-pricing-entity",e==="scorp"?"scorp":"solo")})();</script>
   <div class="pr27-container">
@@ -49,16 +51,28 @@
         <h3>Lite</h3>
         <p>$139/mo</p>
         <p>$1,668 billed annually · save $240 a year</p>
+        <div data-card-accordion class="pr27-acc">
+          <button type="button" class="pr27-acc-trigger" data-card-accordion-trigger><span data-card-accordion-icon>+</span> Also included: bookkeeping, reports &amp; tracking, Heard Banking</button>
+          <div class="pr27-acc-panel" data-card-accordion-panel><h4>Bookkeeping</h4><ul><li>Monthly done-for-you bookkeeping</li></ul></div>
+        </div>
       </div>
       <div class="pr27-card" data-entity-show="solo" data-featured data-slider-label="Essential">
         <h3>Essential (for Sole Props)</h3>
         <p>$189/mo</p>
         <p>$2,268 billed annually · save $360 a year</p>
+        <div data-card-accordion class="pr27-acc">
+          <button type="button" class="pr27-acc-trigger" data-card-accordion-trigger><span data-card-accordion-icon>+</span> Also included: bookkeeping, reports &amp; tracking, Heard Banking</button>
+          <div class="pr27-acc-panel" data-card-accordion-panel><h4>Bookkeeping</h4><ul><li>Monthly done-for-you bookkeeping</li></ul></div>
+        </div>
       </div>
       <div class="pr27-card" data-entity-show="scorp" data-featured data-slider-label="Essential">
         <h3>Essential (for S Corps or Groups)</h3>
         <p>$299/mo</p>
         <p>$3,588 billed annually · save $600 a year</p>
+        <div data-card-accordion class="pr27-acc">
+          <button type="button" class="pr27-acc-trigger" data-card-accordion-trigger><span data-card-accordion-icon>+</span> Also included: bookkeeping, reports &amp; tracking, Heard Banking</button>
+          <div class="pr27-acc-panel" data-card-accordion-panel><h4>Bookkeeping</h4><ul><li>Monthly done-for-you bookkeeping</li></ul></div>
+        </div>
       </div>
       <div class="pr27-panel" data-entity-show="scorp">Every S corp requirement, handled start to finish</div>
     </div>
@@ -72,6 +86,8 @@
     </div>
   </div>
 </section>
+<!-- Mirrors the "Which plan is right for me?" modal pick buttons -->
+<a class="plan-pick" href="#" data-entity="scorp">See S corp and group plans</a>
 <script src="../dist/heard-pricing.js/heard-pricing.js"></script>
 </body>
 </html>
