@@ -19,6 +19,8 @@
   .pr27-card { display: flex; flex-direction: column; padding: 2rem 1.5rem; border-radius: 16px; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,.2); }
   .pr27-panel { display: flex; flex-direction: column; padding: 2rem 1.5rem; border-radius: 16px; background: #eff8f4; }
   .pr27-acc-panel { display: block; }
+  .pr27-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.35); align-items: center; justify-content: center; }
+  .pr27-modal-card { background: #fff; padding: 1.5rem; }
   .pr27-mm { max-width: 54rem; margin: 2.5rem auto 0; border-radius: 16px; background: #fae3c3; padding: 1.5rem; }
   .pr27-mm-cols { display: flex; flex-wrap: wrap; gap: 1rem; }
   .pr27-mm-col { display: flex; flex-direction: column; flex: 1 1 14rem; padding: 1.1rem 1.25rem; border-radius: 12px; background: #fff; }
@@ -52,7 +54,7 @@
         <p>$139/mo</p>
         <p>$1,668 billed annually · save $240 a year</p>
         <div data-card-accordion class="pr27-acc">
-          <button type="button" class="pr27-acc-trigger" data-card-accordion-trigger><span data-card-accordion-icon>+</span> Also included: bookkeeping, reports &amp; tracking, Heard Banking</button>
+          <a class="pr27-acc-trigger" data-card-accordion-trigger aria-expanded="false"><span data-card-accordion-icon>+</span> Also included: bookkeeping, reports &amp; tracking, Heard Banking</a>
           <div class="pr27-acc-panel" data-card-accordion-panel><h4>Bookkeeping</h4><ul><li>Monthly done-for-you bookkeeping</li></ul></div>
         </div>
       </div>
@@ -61,7 +63,7 @@
         <p>$189/mo</p>
         <p>$2,268 billed annually · save $360 a year</p>
         <div data-card-accordion class="pr27-acc">
-          <button type="button" class="pr27-acc-trigger" data-card-accordion-trigger><span data-card-accordion-icon>+</span> Also included: bookkeeping, reports &amp; tracking, Heard Banking</button>
+          <a class="pr27-acc-trigger" data-card-accordion-trigger aria-expanded="false"><span data-card-accordion-icon>+</span> Also included: bookkeeping, reports &amp; tracking, Heard Banking</a>
           <div class="pr27-acc-panel" data-card-accordion-panel><h4>Bookkeeping</h4><ul><li>Monthly done-for-you bookkeeping</li></ul></div>
         </div>
       </div>
@@ -70,7 +72,7 @@
         <p>$299/mo</p>
         <p>$3,588 billed annually · save $600 a year</p>
         <div data-card-accordion class="pr27-acc">
-          <button type="button" class="pr27-acc-trigger" data-card-accordion-trigger><span data-card-accordion-icon>+</span> Also included: bookkeeping, reports &amp; tracking, Heard Banking</button>
+          <a class="pr27-acc-trigger" data-card-accordion-trigger aria-expanded="false"><span data-card-accordion-icon>+</span> Also included: bookkeeping, reports &amp; tracking, Heard Banking</a>
           <div class="pr27-acc-panel" data-card-accordion-panel><h4>Bookkeeping</h4><ul><li>Monthly done-for-you bookkeeping</li></ul></div>
         </div>
       </div>
@@ -86,8 +88,17 @@
     </div>
   </div>
 </section>
-<!-- Mirrors the "Which plan is right for me?" modal pick buttons -->
-<a class="plan-pick" href="#" data-entity="scorp">See S corp and group plans</a>
+<!-- Mirrors the "Which plan is right for me?" link + modal in Webflow -->
+<a class="pr27-help-link" data-plan-modal-open>Not sure? Which plan is right for me</a>
+<div class="pr27-modal" data-plan-modal>
+  <div class="pr27-modal-card" data-plan-modal-dialog>
+    <h3 data-plan-modal-title>Which plan is right for me?</h3>
+    <a class="pr27-modal-close" data-plan-modal-close>&times;</a>
+    <a class="button-primary plan-pick-solo" href="#" data-entity="solo">See solo plans</a>
+    <a class="button-primary plan-pick" href="#" data-entity="scorp">See S corp and group plans</a>
+    <a href="/free-consult">Book a free consult</a>
+  </div>
+</div>
 <script src="../dist/heard-pricing.js/heard-pricing.js"></script>
 </body>
 </html>

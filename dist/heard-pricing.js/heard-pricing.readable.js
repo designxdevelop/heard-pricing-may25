@@ -1,7 +1,20 @@
 // as-button.js
+function toButton(el) {
+  if (el.tagName === "BUTTON")
+    return el;
+  const button = document.createElement("button");
+  button.type = "button";
+  for (const { name, value } of el.attributes) {
+    if (name !== "href" && name !== "role" && name !== "tabindex")
+      button.setAttribute(name, value);
+  }
+  button.append(...el.childNodes);
+  el.replaceWith(button);
+  return button;
+}
 function asButton(el) {
   if (el.tagName === "BUTTON")
-    return;
+    return el;
   el.setAttribute("role", "button");
   if (!el.hasAttribute("tabindex"))
     el.setAttribute("tabindex", "0");
@@ -11,13 +24,14 @@ function asButton(el) {
       el.click();
     }
   });
+  return el;
 }
 
 // pricing-entity.js
 document.addEventListener("DOMContentLoaded", () => {
   const ENTITIES = ["solo", "scorp"];
   const DEFAULT_ENTITY = "solo";
-  const buttons = document.querySelectorAll("[data-entity]");
+  const buttons = [...document.querySelectorAll("[data-entity]")].map((el) => el.closest("[data-entity-toggle]") ? toButton(el) : asButton(el));
   if (!buttons.length)
     return;
   const style = document.createElement("style");
@@ -30,11 +44,9 @@ document.addEventListener("DOMContentLoaded", () => {
       group.setAttribute("aria-label", "Practice type");
   });
   buttons.forEach((btn) => {
-    asButton(btn);
     const inToggle = !!btn.closest("[data-entity-toggle]");
     btn.addEventListener("click", (e) => {
-      if (inToggle)
-        e.preventDefault();
+      e.preventDefault();
       setEntity(btn.getAttribute("data-entity"));
       if (!inToggle)
         document.querySelector("[data-entity-toggle]")?.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -238,14 +250,14 @@ document.addEventListener("DOMContentLoaded", () => {
   style.textContent = "[data-card-accordion]:not([data-open]) [data-card-accordion-panel]{display:none!important}";
   document.head.appendChild(style);
   accordions.forEach((accordion, i) => {
-    const trigger = accordion.querySelector("[data-card-accordion-trigger]");
+    const triggerEl = accordion.querySelector("[data-card-accordion-trigger]");
     const panel = accordion.querySelector("[data-card-accordion-panel]");
-    if (!trigger || !panel)
+    if (!triggerEl || !panel)
       return;
+    const trigger = toButton(triggerEl);
     if (!panel.id)
       panel.id = `card-accordion-panel-${i + 1}`;
     trigger.setAttribute("aria-controls", panel.id);
-    asButton(trigger);
     const setOpen = (open) => {
       accordion.toggleAttribute("data-open", open);
       trigger.setAttribute("aria-expanded", open ? "true" : "false");
@@ -258,5 +270,81 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
       setOpen(!accordion.hasAttribute("data-open"));
     });
+  });
+});
+
+// pricing-modal.js
+document.addEventListener("DOMContentLoaded", () => {
+  const modal = document.querySelector("[data-plan-modal]");
+  if (!modal)
+    return;
+  const style = document.createElement("style");
+  style.textContent = "[data-plan-modal][data-open]{display:flex!important}";
+  document.head.appendChild(style);
+  const dialog = modal.querySelector("[data-plan-modal-dialog]") || modal;
+  dialog.setAttribute("role", "dialog");
+  dialog.setAttribute("aria-modal", "true");
+  dialog.setAttribute("tabindex", "-1");
+  const title = modal.querySelector("[data-plan-modal-title]");
+  if (title) {
+    if (!title.id)
+      title.id = "plan-modal-title";
+    dialog.setAttribute("aria-labelledby", title.id);
+  }
+  const closers = [...modal.querySelectorAll("[data-plan-modal-close]")].map(toButton);
+  closers.forEach((el) => {
+    if (!el.hasAttribute("aria-label"))
+      el.setAttribute("aria-label", "Close");
+  });
+  let opener = null;
+  const isOpen = () => modal.hasAttribute("data-open");
+  const focusables = () => [...dialog.querySelectorAll("a[href], button, [tabindex]:not([tabindex='-1'])")].filter((el) => el.offsetParent !== null);
+  function open(trigger) {
+    opener = trigger;
+    modal.setAttribute("data-open", "");
+    document.body.style.overflow = "hidden";
+    (closers[0] || dialog).focus();
+  }
+  function close(returnFocus = true) {
+    if (!isOpen())
+      return;
+    modal.removeAttribute("data-open");
+    document.body.style.overflow = "";
+    if (returnFocus)
+      opener?.focus();
+  }
+  document.querySelectorAll("[data-plan-modal-open]").forEach((el) => {
+    const trigger = toButton(el);
+    trigger.setAttribute("aria-haspopup", "dialog");
+    trigger.addEventListener("click", () => open(trigger));
+  });
+  closers.forEach((el) => el.addEventListener("click", () => close()));
+  modal.querySelectorAll("[data-entity]").forEach((el) => el.addEventListener("click", () => {
+    close(false);
+    document.querySelector("[data-entity-toggle] .is-active")?.focus({ preventScroll: true });
+  }));
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal)
+      close();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (!isOpen())
+      return;
+    if (e.key === "Escape") {
+      close();
+    } else if (e.key === "Tab") {
+      const items = focusables();
+      if (!items.length)
+        return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
   });
 });

@@ -1,12 +1,15 @@
 // Customer-type toggle ("Solo sole prop" vs "S corp or group").
 // Buttons: [data-entity="solo|scorp"]. Content: [data-entity-show="solo|scorp"].
 // Elements without data-entity-show always show. See MARKUP.md.
-import { asButton } from "./as-button.js";
+import { asButton, toButton } from "./as-button.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const ENTITIES = ["solo", "scorp"];
   const DEFAULT_ENTITY = "solo";
-  const buttons = document.querySelectorAll("[data-entity]");
+  // Toggle options become real <button>s; other triggers (e.g. "See solo plans" in the plan modal) stay styled links.
+  const buttons = [...document.querySelectorAll("[data-entity]")].map((el) =>
+    el.closest("[data-entity-toggle]") ? toButton(el) : asButton(el)
+  );
   if (!buttons.length) return;
 
   // Beats Webflow's class-level display and the mobile slider's inline display.
@@ -20,13 +23,11 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   buttons.forEach((btn) => {
-    asButton(btn);
     const inToggle = !!btn.closest("[data-entity-toggle]");
     btn.addEventListener("click", (e) => {
-      // Outside the toggle (e.g. the "Which plan is right for me?" modal) the link may also close a Webflow modal,
-      // so don't cancel its default; bring the toggle into view instead.
-      if (inToggle) e.preventDefault();
+      e.preventDefault();
       setEntity(btn.getAttribute("data-entity"));
+      // Picked from outside the toggle (the plan modal): bring the toggle and the new cards into view.
       if (!inToggle) document.querySelector("[data-entity-toggle]")?.scrollIntoView({ behavior: "smooth", block: "center" });
     });
   });
